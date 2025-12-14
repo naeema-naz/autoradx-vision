@@ -93,7 +93,7 @@ export function ReportViewer({ result, patientInfo = MOCK_PATIENT }: ReportViewe
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Age / Sex</p>
-              <p className="text-sm font-medium text-foreground">{patientInfo.age}Y / {patientInfo.sex}</p>
+              <p className="text-sm font-medium text-foreground">{patientInfo.age}Y / {patientInfo.gender}</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Study Date</p>

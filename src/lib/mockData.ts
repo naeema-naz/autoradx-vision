@@ -154,7 +154,7 @@ export interface PatientInfo {
   id: string;
   name: string;
   age: number;
-  sex: 'M' | 'F';
+  gender: 'male' | 'female' | 'other';
   studyDate: string;
   modality: string;
   accessionNumber: string;
@@ -165,7 +165,7 @@ export const MOCK_PATIENT: PatientInfo = {
   id: 'PAT-2024-001234',
   name: 'Demo Patient',
   age: 58,
-  sex: 'M',
+  gender: 'male',
   studyDate: new Date().toISOString().split('T')[0],
   modality: 'CR (Computed Radiography)',
   accessionNumber: 'ACC-2024-56789',

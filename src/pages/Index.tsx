@@ -4,6 +4,7 @@ import { Play, RotateCcw, ArrowRight, FileText, CheckCircle2 } from 'lucide-reac
 import { Header } from '@/components/dashboard/Header';
 import { ImageUpload } from '@/components/dashboard/ImageUpload';
 import { ModelSelector } from '@/components/dashboard/ModelSelector';
+import { PatientInfoForm } from '@/components/dashboard/PatientInfoForm';
 import { PipelineProgress } from '@/components/dashboard/PipelineProgress';
 import { AnalysisResults } from '@/components/dashboard/AnalysisResults';
 import { GradCamViewer } from '@/components/dashboard/GradCamViewer';
@@ -17,12 +18,14 @@ import {
   generateMockAnalysisResult, 
   AI_MODELS,
   type PipelineStage,
-  type AnalysisResult 
+  type AnalysisResult,
+  type PatientInfo
 } from '@/lib/mockData';
 
 export default function Index() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
+  const [patientInfo, setPatientInfo] = useState<PatientInfo | null>(null);
   const [pipelineStages, setPipelineStages] = useState<PipelineStage[]>(INITIAL_PIPELINE_STAGES);
   const [isProcessing, setIsProcessing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
@@ -96,10 +99,10 @@ export default function Index() {
   };
 
   const handleStartAnalysis = async () => {
-    if (!uploadedImage || !selectedModel) {
+    if (!uploadedImage || !selectedModel || !patientInfo) {
       toast({
         title: "Missing Requirements",
-        description: "Please upload an image and select an AI model.",
+        description: "Please upload an image, select an AI model, and enter patient information.",
         variant: "destructive",
       });
       return;
@@ -151,12 +154,13 @@ export default function Index() {
   const handleReset = () => {
     setUploadedImage(null);
     setSelectedModel(null);
+    setPatientInfo(null);
     setPipelineStages(INITIAL_PIPELINE_STAGES);
     setAnalysisResult(null);
     setCurrentStage(0);
   };
 
-  const canStartAnalysis = uploadedImage && selectedModel && !isProcessing;
+  const canStartAnalysis = uploadedImage && selectedModel && patientInfo && !isProcessing;
 
   return (
     <div className="min-h-screen bg-background">
@@ -185,6 +189,10 @@ export default function Index() {
                     onModelSelect={setSelectedModel}
                     disabled={isProcessing}
                   />
+
+                  {selectedModel && !patientInfo && (
+                    <PatientInfoForm onSave={setPatientInfo} />
+                  )}
 
                   <div className="flex gap-3">
                     <Button
@@ -264,6 +272,8 @@ export default function Index() {
                         <span>Upload Image</span>
                         <ArrowRight className="h-4 w-4" />
                         <span>Select Model</span>
+                        <ArrowRight className="h-4 w-4" />
+                        <span>Enter Patient Info</span>
                         <ArrowRight className="h-4 w-4" />
                         <span>Start Analysis</span>
                       </div>
@@ -348,7 +358,7 @@ export default function Index() {
                     </TabsContent>
 
                     <TabsContent value="report" className="mt-6">
-                      <ReportViewer result={analysisResult} />
+                      <ReportViewer result={analysisResult} patientInfo={patientInfo} />
                     </TabsContent>
                   </Tabs>
                 </motion.div>
