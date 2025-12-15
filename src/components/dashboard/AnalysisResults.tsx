@@ -26,6 +26,7 @@ const getSeverityConfig = (severity: Finding['severity']) => {
 
 export function AnalysisResults({ result }: AnalysisResultsProps) {
   const overallConfidence = result.confidence * 100;
+  const overallLoss = 100 - overallConfidence;
 
   return (
     <div className="space-y-6">
@@ -68,8 +69,8 @@ export function AnalysisResults({ result }: AnalysisResultsProps) {
                   <Zap className="h-5 w-5 text-accent" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-foreground">{result.findings.length}</p>
-                  <p className="text-xs text-muted-foreground">Findings Detected</p>
+                  <p className="text-2xl font-bold text-foreground">{overallLoss.toFixed(1)}%</p>
+                  <p className="text-xs text-muted-foreground">Overall Loss</p>
                 </div>
               </div>
             </CardContent>

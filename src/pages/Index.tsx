@@ -102,7 +102,7 @@ export default function Index() {
     if (!uploadedImage || !selectedModel || !patientInfo) {
       toast({
         title: "Missing Requirements",
-        description: "Please upload an image, select an AI model, and enter patient information.",
+        description: "Please enter patient information, upload an image, and select an AI model.",
         variant: "destructive",
       });
       return;
@@ -165,7 +165,6 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
       <main className="container py-8 px-6">
         <div className="grid lg:grid-cols-12 gap-8">
           {/* Left Panel - Input Controls */}
@@ -177,23 +176,53 @@ export default function Index() {
             >
               <Card className="border-border shadow-sm">
                 <CardContent className="p-6 space-y-6">
-                  <ImageUpload
-                    onImageUpload={handleImageUpload}
-                    onSampleLoad={handleSampleLoad}
-                    uploadedImage={uploadedImage}
-                    onClear={handleClearImage}
-                  />
-
-                  <ModelSelector
-                    selectedModel={selectedModel}
-                    onModelSelect={setSelectedModel}
-                    disabled={isProcessing}
-                  />
-
-                  {selectedModel && !patientInfo && (
+                  {/* Show patient info form first */}
+                  {!patientInfo && (
                     <PatientInfoForm onSave={setPatientInfo} />
                   )}
-
+                  {/* After saving, show info and then image upload */}
+                  {patientInfo && (
+                    <>
+                      <div className="mb-4">
+                        <div className="border-success/30 bg-success/5 border rounded shadow-sm">
+                          <div className="p-4">
+                            <div className="font-semibold mb-2 text-lg text-success">Patient Information</div>
+                            <div><span className="font-medium">Name:</span> {patientInfo.name}</div>
+                            <div><span className="font-medium">Age:</span> {patientInfo.age}</div>
+                            <div><span className="font-medium">Gender:</span> {patientInfo.gender}</div>
+                            <div><span className="font-medium">ID:</span> {patientInfo.id}</div>
+                          </div>
+                        </div>
+                      </div>
+                      {!uploadedImage && (
+                        <ImageUpload
+                          onImageUpload={handleImageUpload}
+                          onSampleLoad={handleSampleLoad}
+                          uploadedImage={uploadedImage}
+                          onClear={handleClearImage}
+                        />
+                      )}
+                    </>
+                  )}
+                  {/* Show model selector only after image upload */}
+                  {uploadedImage && (
+                    <>
+                      <div className="mb-4 flex flex-col items-center">
+                        <div className="font-semibold mb-2">Uploaded Image</div>
+                        <img
+                          src={uploadedImage}
+                          alt="Uploaded X-ray"
+                          className="max-h-64 rounded border"
+                          style={{ objectFit: 'contain' }}
+                        />
+                      </div>
+                      <ModelSelector
+                        selectedModel={selectedModel}
+                        onModelSelect={setSelectedModel}
+                        disabled={isProcessing}
+                      />
+                    </>
+                  )}
                   <div className="flex gap-3">
                     <Button
                       variant="medical"
@@ -266,14 +295,14 @@ export default function Index() {
                       </div>
                       <h3 className="text-lg font-semibold text-foreground mb-2">No Analysis Yet</h3>
                       <p className="text-sm text-muted-foreground text-center max-w-sm">
-                        Upload an X-ray image and select an AI model to begin the analysis pipeline.
+                        Enter patient information and upload an X-ray image to begin the analysis pipeline.
                       </p>
                       <div className="flex items-center gap-2 mt-6 text-sm text-muted-foreground">
+                        <span>Enter Patient Info</span>
+                        <ArrowRight className="h-4 w-4" />
                         <span>Upload Image</span>
                         <ArrowRight className="h-4 w-4" />
                         <span>Select Model</span>
-                        <ArrowRight className="h-4 w-4" />
-                        <span>Enter Patient Info</span>
                         <ArrowRight className="h-4 w-4" />
                         <span>Start Analysis</span>
                       </div>
